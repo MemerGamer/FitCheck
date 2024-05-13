@@ -17,8 +17,6 @@ public partial class PostgresContext : DbContext
 
     public virtual DbSet<Membership> Memberships { get; set; }
 
-    public virtual DbSet<MembershipType> MembershipTypes { get; set; }
-
     public virtual DbSet<PurchaseHistory> PurchaseHistories { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
@@ -45,29 +43,9 @@ public partial class PostgresContext : DbContext
             entity.Property(e => e.ExpirationDate)
                 .HasColumnType("timestamp(0) without time zone")
                 .HasColumnName("expiration_date");
-            entity.Property(e => e.IsValid).HasColumnName("is_valid");
+            entity.Property(e => e.IsExpired).HasColumnName("is_expired");
             entity.Property(e => e.MaxEntries).HasColumnName("max_entries");
-            entity.Property(e => e.MembershipTypeId).HasColumnName("membership_type_id");
 
-            entity.HasOne(d => d.MembershipType).WithMany(p => p.Memberships)
-                .HasForeignKey(d => d.MembershipTypeId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("memberships_membership_type_id_foreign");
-        });
-
-        modelBuilder.Entity<MembershipType>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("membership_types_pkey");
-
-            entity.ToTable("membership_types");
-
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("id");
-            entity.Property(e => e.Name)
-                .HasMaxLength(255)
-                .HasColumnName("name");
-            entity.Property(e => e.Price).HasColumnName("price");
         });
 
         modelBuilder.Entity<PurchaseHistory>(entity =>
