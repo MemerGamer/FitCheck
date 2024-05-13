@@ -28,9 +28,8 @@ using (var scope = app.Services.CreateScope())
         // Seed user types
         var userTypes = new[]
         {
-            new UserType { Id = Guid.Parse("00000000-0000-0000-0000-000000000001"), Name = "Client" },
-            new UserType { Id = Guid.Parse("00000000-0000-0000-0000-000000000002"), Name = "Manager" },
-            new UserType { Id = Guid.Parse("00000000-0000-0000-0000-000000000003"), Name = "Admin" }
+            new UserType { Id = Guid.Parse("00000000-0000-0000-0000-000000000001"), Name = "Member" },
+            new UserType { Id = Guid.Parse("00000000-0000-0000-0000-000000000002"), Name = "Admin" },
         };
 
         dbContext.Set<UserType>().AddRange(userTypes);
