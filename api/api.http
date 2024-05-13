@@ -20,3 +20,18 @@ Content-Type: application/json
   "email": "john@example.com",
   "password": "password123"
 }
+
+###
+
+GET {{api_HostAddress}}/user/{{$guid}}
+Content-Type: application/json
+
+###
+
+GET {{api_HostAddress}}/user/{{$guid}}/memberships
+
+###
+
+GET {{api_HostAddress}}/user/{{$guid}}/memberships/{{$guid}}
+
+###

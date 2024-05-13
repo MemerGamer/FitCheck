@@ -64,8 +64,9 @@ public class AuthController : ControllerBase
             return BadRequest("Invalid email or password.");
         }
 
-        // Authentication successful
-        return Ok("Login successful.");
+        // Authentication successful - return user_id = user.id json
+        var res = new { user_id = user.Id };
+        return Ok(res);
     }
     private string HashPassword(string password)
     {

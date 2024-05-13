@@ -11,6 +11,8 @@ namespace api
 
         public DbSet<UserType> UserTypes { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<PurchaseHistory> PurchaseHistory { get; set; }
+        public DbSet<Membership> Memberships { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -54,6 +56,50 @@ namespace api
                     .HasForeignKey(d => d.UserTypeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_User_UserType");
+            });
+
+            // Configure the PurchaseHistory entity
+            modelBuilder.Entity<PurchaseHistory>(entity =>
+            {
+                entity.ToTable("PurchaseHistory");
+
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.PurchaseDate).HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.PurchaseHistories)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PurchaseHistory_User");
+
+                entity.HasOne(d => d.Membership)
+                    .WithMany(p => p.PurchaseHistories)
+                    .HasForeignKey(d => d.MembershipId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PurchaseHistory_Membership");
+            });
+
+            // Configure the Membership entity
+            modelBuilder.Entity<Membership>(entity =>
+            {
+                entity.ToTable("Membership");
+
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+
+                entity.Property(e => e.AccessHour).IsRequired();
+
+                entity.Property(e => e.IsExpired).IsRequired().HasDefaultValue(false);
+
+                entity.Property(e => e.CurrentEntries).IsRequired();
+
+                entity.Property(e => e.MaxEntries).IsRequired();
             });
         }
     }
