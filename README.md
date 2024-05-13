@@ -13,3 +13,9 @@ This will create a postgres db with:
 - root user: postgres
 - root passwd: root
 - port: 5469
+
+
+## API DB migration:
+```console
+PM> dotnet ef database update --context DatabaseContext
+```
