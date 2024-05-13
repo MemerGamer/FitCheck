@@ -152,6 +152,7 @@ public partial class App : Application
     {
         views.Register(
             new ViewMap(ViewModel: typeof(ShellViewModel)),
+            new ViewMap<RegisterPage, RegisterViewModel>(),
             new ViewMap<LoginPage, LoginViewModel>(),
             new ViewMap<MainPage, MainViewModel>(),
             new DataViewMap<SecondPage, SecondViewModel, Entity>()
@@ -161,6 +162,7 @@ public partial class App : Application
             new RouteMap("", View: views.FindByViewModel<ShellViewModel>(),
                 Nested:
                 [
+                    new ("Register", View: views.FindByViewModel<RegisterViewModel>()),
                     new ("Login", View: views.FindByViewModel<LoginViewModel>()),
                     new ("Main", View: views.FindByViewModel<MainViewModel>()),
                     new ("Second", View: views.FindByViewModel<SecondViewModel>()),

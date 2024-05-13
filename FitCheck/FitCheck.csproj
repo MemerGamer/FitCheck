@@ -46,7 +46,27 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Presentation\RegisterPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\FitCheck.MauiControls\FitCheck.MauiControls.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Presentation\BlankPage1.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Presentation\RegisterPage.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Presentation\RegisterPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
 </Project>
