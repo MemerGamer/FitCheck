@@ -22,7 +22,7 @@ namespace api.Controllers
         [HttpGet("user/{userUuid}/memberships")]
         public async Task<IActionResult> GetMembershipsForUser(Guid userUuid)
         {
-            var memberships = await _context.PurchaseHistory
+            var memberships = await _context.PurchasedMemberships
                 .Where(ph => ph.UserId == userUuid)
                 .Join(
                     _context.Memberships,
@@ -33,8 +33,8 @@ namespace api.Controllers
                         Id = m.Id,
                         Name = m.Name,
                         AccessHour = m.AccessHour,
-                        IsExpired = m.IsExpired,
-                        CurrentEntries = m.CurrentEntries,
+                        IsExpired = ph.IsExpired,
+                        CurrentEntries = ph.CurrentEntries,
                         MaxEntries = m.MaxEntries
                     }
                 )
@@ -46,7 +46,7 @@ namespace api.Controllers
         [HttpGet("user/{userUuid}/memberships/{membershipId}")]
         public async Task<IActionResult> GetMembershipForUser(Guid userUuid, Guid membershipId)
         {
-            var membership = await _context.PurchaseHistory
+            var membership = await _context.PurchasedMemberships
                 .Where(ph => ph.UserId == userUuid && ph.MembershipId == membershipId)
                 .Join(
                     _context.Memberships,
@@ -57,13 +57,13 @@ namespace api.Controllers
                         Id = m.Id,
                         Name = m.Name,
                         Barcode = m.Barcode,
-                        CurrentEntries = m.CurrentEntries,
+                        CurrentEntries = ph.CurrentEntries,
                         MaxEntries = m.MaxEntries,
                         AccessHour = m.AccessHour,
                         Description = m.Description,
                         Price = m.Price,
-                        IsExpired = m.IsExpired,
-                        ExpirationDate = m.ExpirationDate,
+                        IsExpired = ph.IsExpired,
+                        ExpirationDate = ph.ExpirationDate,
                         PurchaseDate = ph.PurchaseDate
                     }
                 )

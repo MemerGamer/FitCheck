@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace api.Models;
 
-public partial class PurchaseHistory
+public partial class PurchasedMemberships
 {
     public Guid Id { get; set; }
 
@@ -11,8 +11,13 @@ public partial class PurchaseHistory
 
     public Guid MembershipId { get; set; }
 
+    public int CurrentEntries { get; set; }
+
+    public bool IsExpired { get; set; }
+
     public DateTime PurchaseDate { get; set; }
 
+    public DateTime ExpirationDate { get; set; }
     public virtual Membership Membership { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;

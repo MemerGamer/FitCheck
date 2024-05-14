@@ -11,7 +11,7 @@ namespace api
 
         public DbSet<UserType> UserTypes { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<PurchaseHistory> PurchaseHistory { get; set; }
+        public DbSet<PurchasedMemberships> PurchasedMemberships { get; set; }
         public DbSet<Membership> Memberships { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -58,28 +58,30 @@ namespace api
                     .HasConstraintName("FK_User_UserType");
             });
 
-            // Configure the PurchaseHistory entity
-            modelBuilder.Entity<PurchaseHistory>(entity =>
+            // Configure the PurchasedMemberships entity
+            modelBuilder.Entity<PurchasedMemberships>(entity =>
             {
-                entity.ToTable("PurchaseHistory");
+                entity.ToTable("PurchasedMemberships");
 
                 entity.HasKey(e => e.Id);
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
-
+                entity.Property(e => e.CurrentEntries).IsRequired().HasDefaultValue(0);
+                entity.Property(e => e.IsExpired).IsRequired().HasDefaultValue(false);
                 entity.Property(e => e.PurchaseDate).HasDefaultValueSql("CURRENT_TIMESTAMP");
-
+                // Expiration date is current date + 1 month
+                entity.Property(e => e.ExpirationDate).HasDefaultValueSql("CURRENT_TIMESTAMP + INTERVAL '1 month'");
                 entity.HasOne(d => d.User)
-                    .WithMany(p => p.PurchaseHistories)
+                    .WithMany(p => p.PurchasedMemberships)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PurchaseHistory_User");
+                    .HasConstraintName("FK_PurchasedMemberships_User");
 
                 entity.HasOne(d => d.Membership)
-                    .WithMany(p => p.PurchaseHistories)
+                    .WithMany(p => p.PurchasedMemberships)
                     .HasForeignKey(d => d.MembershipId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PurchaseHistory_Membership");
+                    .HasConstraintName("FK_PurchasedMemberships_Membership");
             });
 
             // Configure the Membership entity
@@ -93,13 +95,15 @@ namespace api
 
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
 
+                entity.Property(e => e.Barcode).IsRequired().HasMaxLength(100);
+
                 entity.Property(e => e.AccessHour).IsRequired();
 
-                entity.Property(e => e.IsExpired).IsRequired().HasDefaultValue(false);
-
-                entity.Property(e => e.CurrentEntries).IsRequired();
+                entity.Property(e => e.Description).IsRequired().HasMaxLength(255);
 
                 entity.Property(e => e.MaxEntries).IsRequired();
+
+                entity.Property(e => e.Price).IsRequired().HasDefaultValue(0);
             });
         }
     }

@@ -14,15 +14,9 @@ public partial class Membership
 
     public string Description {  get; set; }
 
-    public long CurrentEntries { get; set; }
-
     public long MaxEntries { get; set; }
 
     public double Price { get; set; }
 
-    public bool IsExpired { get; set; } = false;
-
-    public DateTime ExpirationDate { get; set; }
-
-    public virtual ICollection<PurchaseHistory> PurchaseHistories { get; set; } = new List<PurchaseHistory>();
+    public virtual ICollection<PurchasedMemberships> PurchasedMemberships { get; set; } = new List<PurchasedMemberships>();
 }

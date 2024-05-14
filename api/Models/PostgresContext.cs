@@ -17,7 +17,7 @@ public partial class PostgresContext : DbContext
 
     public virtual DbSet<Membership> Memberships { get; set; }
 
-    public virtual DbSet<PurchaseHistory> PurchaseHistories { get; set; }
+    public virtual DbSet<PurchasedMemberships> PurchaseHistories { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
 
@@ -38,21 +38,20 @@ public partial class PostgresContext : DbContext
             entity.Property(e => e.Id)
                 .ValueGeneratedNever()
                 .HasColumnName("id");
+            entity.Property(e => e.Name).HasColumnName("name");
             entity.Property(e => e.Barcode).HasColumnName("barcode");
-            entity.Property(e => e.CurrentEntries).HasColumnName("current_entries");
-            entity.Property(e => e.ExpirationDate)
-                .HasColumnType("timestamp(0) without time zone")
-                .HasColumnName("expiration_date");
-            entity.Property(e => e.IsExpired).HasColumnName("is_expired");
+            entity.Property(e => e.AccessHour).HasColumnName("access_hour");
+            entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.MaxEntries).HasColumnName("max_entries");
+            entity.Property(e => e.Price).HasColumnName("price");
 
         });
 
-        modelBuilder.Entity<PurchaseHistory>(entity =>
+        modelBuilder.Entity<PurchasedMemberships>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("purchase_history_pkey");
+            entity.HasKey(e => e.Id).HasName("purchased_memberships_pkey");
 
-            entity.ToTable("purchase_history");
+            entity.ToTable("purchased_memberships");
 
             entity.Property(e => e.Id)
                 .ValueGeneratedNever()
@@ -63,15 +62,22 @@ public partial class PostgresContext : DbContext
                 .HasColumnName("purchase_date");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
-            entity.HasOne(d => d.Membership).WithMany(p => p.PurchaseHistories)
+
+            entity.Property(e => e.CurrentEntries).HasColumnName("current_entries");
+            entity.Property(e => e.ExpirationDate)
+                .HasColumnType("timestamp(0) without time zone")
+                .HasColumnName("expiration_date");
+            entity.Property(e => e.IsExpired).HasColumnName("is_expired");
+
+            entity.HasOne(d => d.Membership).WithMany(p => p.PurchasedMemberships)
                 .HasForeignKey(d => d.MembershipId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("purchase_history_membership_id_foreign");
+                .HasConstraintName("purchased_memberships_id_foreign");
 
-            entity.HasOne(d => d.User).WithMany(p => p.PurchaseHistories)
+            entity.HasOne(d => d.User).WithMany(p => p.PurchasedMemberships)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("purchase_history_user_id_foreign");
+                .HasConstraintName("purchased_memberships_user_id_foreign");
         });
 
         modelBuilder.Entity<User>(entity =>
