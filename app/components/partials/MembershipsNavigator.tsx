@@ -5,10 +5,12 @@ import MembershipCardDetailed from './MembershipCardDetailed';
 
 const MembershipsStack = createStackNavigator();
 
-function MembershipsNavigator() {
+function MembershipsNavigator({ userId }: { userId: string }) {
     return (
         <MembershipsStack.Navigator initialRouteName='MembershipsList'>
-            <MembershipsStack.Screen name="MembershipsList" component={MembershipsScreen} options={{ headerShown: false }} />
+            <MembershipsStack.Screen name="MembershipsList" options={{ headerShown: false }} >
+                {props => <MembershipsScreen {...props} userId={userId} />}
+            </MembershipsStack.Screen>
             <MembershipsStack.Screen name="MembershipCardDetailed" component={MembershipCardDetailed} />
         </MembershipsStack.Navigator>
     );

@@ -33,6 +33,7 @@ namespace api.Controllers
             var userResponse = new
             {
                 UUID = user.Id,
+                Photo = user.Photo,
                 Username = user.Username,
                 Email = user.Email,
                 UserType = user.UserType.Name,

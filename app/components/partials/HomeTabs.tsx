@@ -1,28 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import ProfileScreen from '../ProfileScreen';
 import MembershipsNavigator from './MembershipsNavigator';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import UsersScreen from '../UsersScreen';
 import ScannerScreen from '../ScannerScreen';
 import UsersNavigator from './UsersNavigator';
 import { MembershipProvider } from '../../contexts/MembershipContext';
 
+import baseUrl from '../../contexts/apiContext';
+
 const Tab = createBottomTabNavigator();
 
-function HomeTabs({ setIsAuthenticated }: { setIsAuthenticated: (value: boolean) => void; }) {
-    const [userType, setUserType] = useState('admin'); // member, admin
 
-    const userData = {
-        id: 1,
-        username: 'john_doe',
-        email: 'john_doe@gmail.com',
-        createdAt: '2021-10-01',
-        userType: 'admin',
-        lastCheckedIn: '2021-10-01',
-        profilePicture: 'https://via.placeholder.com/150'
-    }
+function HomeTabs({ setIsAuthenticated, setUserId, userId }: { setIsAuthenticated: (value: boolean) => void; setUserId: (value: string) => void; userId: string }) {
+    const [userType, setUserType] = useState('member'); // member, admin
+    const [userData, setUserData] = useState({});
 
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const resp = await fetch(baseUrl + `/user/${userId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (resp.status === 200) {
+                    const respJson = await resp.json();
+                    console.log(respJson);
+                    setUserData(respJson);
+                    setUserType(respJson.userType);
+                } else {
+                    alert('Something went wrong!');
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
+
+        fetchUser();
+    }, [userId]);
 
     return (
         <Tab.Navigator
@@ -69,10 +87,12 @@ function HomeTabs({ setIsAuthenticated }: { setIsAuthenticated: (value: boolean)
             ) : (
                 <Tab.Group>
                     <MembershipProvider>
-                        <Tab.Screen name="Memberships" component={MembershipsNavigator} />
+                    <Tab.Screen name="Memberships">
+                    {props => <MembershipsNavigator {...props} userId={userId} />}
+                        </Tab.Screen>
                     </MembershipProvider>
                     <Tab.Screen name="Profile">
-                        {props => <ProfileScreen {...props} setIsAuthenticated={setIsAuthenticated} user={userData} />}
+                        {props => <ProfileScreen {...props} setIsAuthenticated={setIsAuthenticated} setUserId={setUserId} user={userData as any} />}
                     </Tab.Screen>
                 </Tab.Group>
             )}

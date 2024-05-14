@@ -3,7 +3,7 @@ import { View, Text, Image } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 
 const MembershipCardDetailed = ({ route }: { route: any }) => {
-    const { title, description, availability, accessHours, purchaseDate, image } = route.params;
+    const { title, description, availability, accessHours, price, purchaseDate, expirationDate, image } = route.params;
 
     return (
         <ScrollView>
@@ -20,7 +20,15 @@ const MembershipCardDetailed = ({ route }: { route: any }) => {
                 </View>
                 <View className='mx-5 my-5 flex flex-row justify-between'>
                     <Text className='self-center font-bold'>Purchase Date:</Text>
-                    <Text className='self-center'>{purchaseDate}</Text>
+                    <Text className='self-center'>{new Date(purchaseDate).toLocaleString()}</Text>
+                </View>
+                <View className='mx-5 my-5 flex flex-row justify-between'>
+                    <Text className='self-center font-bold'>Price:</Text>
+                    <Text className='self-center'>${price}</Text>
+                </View>
+                <View className='mx-5 my-5 flex flex-row justify-between'>
+                    <Text className='self-center font-bold'>Expiration Date:</Text>
+                    <Text className='self-center'>{new Date(expirationDate).toLocaleString()}</Text>
                 </View>
             </View>
             <View className='w-96 h-fit self-center m-5 bg-white rounded-xl shadow-xl'>
