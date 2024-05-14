@@ -20,8 +20,6 @@ const ProfileScreen = ({ setIsAuthenticated, user }: { setIsAuthenticated: (valu
 
     const { id, username, email, createdAt, userType, lastCheckedIn, profilePicture } = user as UserProps;
 
-    console.log(user);
-
     return (
         <ScrollView>
             <View className='flex flex-col justify-start items-center mt-5'>

@@ -1,21 +1,24 @@
 import React, { useState } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import AdminScreen from '../AdminScreen';
 import ProfileScreen from '../ProfileScreen';
 import MembershipsNavigator from './MembershipsNavigator';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import UsersScreen from '../UsersScreen';
+import ScannerScreen from '../ScannerScreen';
+import UsersNavigator from './UsersNavigator';
+import { MembershipProvider } from '../../contexts/MembershipContext';
 
 const Tab = createBottomTabNavigator();
 
 function HomeTabs({ setIsAuthenticated }: { setIsAuthenticated: (value: boolean) => void; }) {
-    const [userType, setUserType] = useState('member'); // member, admin
+    const [userType, setUserType] = useState('admin'); // member, admin
 
     const userData = {
         id: 1,
         username: 'john_doe',
         email: 'john_doe@gmail.com',
         createdAt: '2021-10-01',
-        userType: 'member',
+        userType: 'admin',
         lastCheckedIn: '2021-10-01',
         profilePicture: 'https://via.placeholder.com/150'
     }
@@ -35,6 +38,14 @@ function HomeTabs({ setIsAuthenticated }: { setIsAuthenticated: (value: boolean)
                         iconName = focused
                             ? 'person-circle'
                             : 'person-circle-outline';
+                    } else if (route.name === 'Users') {
+                        iconName = focused
+                            ? 'people'
+                            : 'people-outline';
+                    } else if (route.name === 'Scanner') {
+                        iconName = focused
+                            ? 'scan'
+                            : 'scan-outline';
                     }
                     else {
                         iconName = 'add'; // Provide a default value here
@@ -47,11 +58,19 @@ function HomeTabs({ setIsAuthenticated }: { setIsAuthenticated: (value: boolean)
                 tabBarInactiveTintColor: 'gray',
             })}>
             {userType === 'admin' ? (
-                <Tab.Screen name="Admin" component={AdminScreen} />
+                <Tab.Group>
+                    <Tab.Screen name="Users" component={UsersNavigator} />
+                    <Tab.Screen name="Scanner" component={ScannerScreen} />
+                    <Tab.Screen name='Profile'>
+                        {props => <ProfileScreen {...props} setIsAuthenticated={setIsAuthenticated} user={userData} />}
+                    </Tab.Screen>
+                </Tab.Group>
 
             ) : (
                 <Tab.Group>
-                    <Tab.Screen name="Memberships" component={MembershipsNavigator} />
+                    <MembershipProvider>
+                        <Tab.Screen name="Memberships" component={MembershipsNavigator} />
+                    </MembershipProvider>
                     <Tab.Screen name="Profile">
                         {props => <ProfileScreen {...props} setIsAuthenticated={setIsAuthenticated} user={userData} />}
                     </Tab.Screen>

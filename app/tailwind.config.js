@@ -10,7 +10,21 @@ module.exports = {
   ],
   presets: [require("nativewind/preset")],
   theme: {
-    extend: {},
+    extend: {
+      height: {
+        '3': '0.75rem',
+        '4': '1rem',
+        '5': '1.25rem',
+        '10': '2.5rem',
+        '12': '3rem',
+      },
+      width: {
+        '3': '0.75rem',
+        '4': '1rem',
+        '5': '1.25rem',
+        '10': '2.5rem',
+      },
+    }, 
   },
   plugins: [],
 }
