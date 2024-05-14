@@ -56,7 +56,7 @@ namespace api.Controllers
                     {
                         Id = m.Id,
                         Name = m.Name,
-                        Barcode = m.Barcode,
+                        Barcode = ph.Barcode,
                         CurrentEntries = ph.CurrentEntries,
                         MaxEntries = m.MaxEntries,
                         AccessHour = m.AccessHour,

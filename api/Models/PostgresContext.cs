@@ -39,7 +39,6 @@ public partial class PostgresContext : DbContext
                 .ValueGeneratedNever()
                 .HasColumnName("id");
             entity.Property(e => e.Name).HasColumnName("name");
-            entity.Property(e => e.Barcode).HasColumnName("barcode");
             entity.Property(e => e.AccessHour).HasColumnName("access_hour");
             entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.MaxEntries).HasColumnName("max_entries");
@@ -63,6 +62,7 @@ public partial class PostgresContext : DbContext
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
 
+            entity.Property(e => e.Barcode).HasColumnName("barcode");
             entity.Property(e => e.CurrentEntries).HasColumnName("current_entries");
             entity.Property(e => e.ExpirationDate)
                 .HasColumnType("timestamp(0) without time zone")

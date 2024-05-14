@@ -95,8 +95,6 @@ namespace api
 
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
 
-                entity.Property(e => e.Barcode).IsRequired().HasMaxLength(100);
-
                 entity.Property(e => e.AccessHour).IsRequired();
 
                 entity.Property(e => e.Description).IsRequired().HasMaxLength(255);

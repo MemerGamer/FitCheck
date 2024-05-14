@@ -11,6 +11,8 @@ public partial class PurchasedMemberships
 
     public Guid MembershipId { get; set; }
 
+    public string Barcode { get; set; } = null!;
+
     public int CurrentEntries { get; set; }
 
     public bool IsExpired { get; set; }
