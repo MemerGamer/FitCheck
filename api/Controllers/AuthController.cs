@@ -36,7 +36,7 @@ public class AuthController : ControllerBase
             Username = request.Username,
             Password = hashedPassword,
             UserTypeId = Guid.Parse("00000000-0000-0000-0000-000000000001"), // Member user type
-            Photo = null,
+            Photo = "https://ui-avatars.com/api/?name=" + request.Username,
             CreationDate = DateTime.UtcNow
         };
 

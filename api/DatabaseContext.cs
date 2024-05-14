@@ -45,7 +45,7 @@ namespace api
 
                 entity.Property(e => e.Password).IsRequired().HasMaxLength(100);
 
-                entity.Property(e => e.Photo).HasMaxLength(255);
+                entity.Property(e => e.Photo).HasMaxLength(255).HasDefaultValue("https://ui-avatars.com/api/?name=" + "User");
 
                 entity.Property(e => e.IsDeleted).IsRequired().HasDefaultValue(false);
 
