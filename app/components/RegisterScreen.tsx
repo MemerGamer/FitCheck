@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button } from 'react-native';
+import baseUrl from '../contexts/apiContext';
 
 const RegisterScreen = ({ navigation }: { navigation: any }) => {
     const [email, setEmail] = useState('');
@@ -7,10 +8,30 @@ const RegisterScreen = ({ navigation }: { navigation: any }) => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
-    const handleRegister = () => {
+    const handleRegister = async () => {
         // Perform registration logic here
         console.log(`Email: ${email}, Username: ${username}, Password: ${password}, Confirm Password: ${confirmPassword}`);
-        navigation.navigate('Login');
+
+        if (password !== confirmPassword) {
+            alert('Passwords do not match');
+            return;
+        }
+
+        // create http request to url
+        const resp = await fetch(baseUrl + '/auth/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, username, password }),
+        })
+
+        if (resp.status === 200) {
+            navigation.navigate('Login');
+        }
+        else {
+            alert('Something went wrong, make sure you entered valid data!');
+        }
     };
 
     return (
