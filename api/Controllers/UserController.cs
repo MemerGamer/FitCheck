@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using api.Filters;
 using api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -41,6 +42,17 @@ namespace api.Controllers
             };
 
             return Ok(userResponse);
+        }
+
+        [ServiceFilter(typeof(AdminAuthorizationFilter))]
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var users = await _context.Users
+                .Select(u => new { Id = u.Id, Username = u.Username })
+                .ToListAsync();
+
+            return Ok(users);
         }
     }
 }

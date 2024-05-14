@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using api.Filters;
 using api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -75,6 +76,15 @@ namespace api.Controllers
             }
 
             return Ok(membership);
+        }
+
+
+        [ServiceFilter(typeof(AdminAuthorizationFilter))]
+        [HttpGet("memberships")]
+        public async Task<IActionResult> GetAllMemberships()
+        {
+            var memberships = await _context.Memberships.ToListAsync();
+            return Ok(memberships);
         }
     }
 }
