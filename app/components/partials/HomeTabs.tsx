@@ -75,7 +75,7 @@ function HomeTabs({ setIsAuthenticated, setUserId, userId }: { setIsAuthenticate
                 tabBarActiveTintColor: 'tomato',
                 tabBarInactiveTintColor: 'gray',
             })}>
-            {userType === 'admin' ? (
+            {userType.toLowerCase() === 'admin' ? (
                 <Tab.Group>
                     <Tab.Screen name="Users" component={UsersNavigator} />
                     <Tab.Screen name="Scanner" component={ScannerScreen} />
@@ -86,11 +86,11 @@ function HomeTabs({ setIsAuthenticated, setUserId, userId }: { setIsAuthenticate
 
             ) : (
                 <Tab.Group>
-                    <MembershipProvider>
-                    <Tab.Screen name="Memberships">
-                    {props => <MembershipsNavigator {...props} userId={userId} />}
+                    {/* <MembershipProvider userId={userId}> */}
+                        <Tab.Screen name="Memberships">
+                            {props => <MembershipsNavigator {...props} userId={userId} />}
                         </Tab.Screen>
-                    </MembershipProvider>
+                    {/* </MembershipProvider> */}
                     <Tab.Screen name="Profile">
                         {props => <ProfileScreen {...props} setIsAuthenticated={setIsAuthenticated} setUserId={setUserId} user={userData as any} />}
                     </Tab.Screen>

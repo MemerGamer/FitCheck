@@ -1,10 +1,11 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import baseUrl from './apiContext';
 
 // Create the context
 const MembershipContext = createContext({});
 
 // Provider component
-export const MembershipProvider = ({ children}: {children: any}) => {
+export const MembershipProvider = ({ children, userId}: {children: any, userId:string}) => {
     const [memberships, setMemberships] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -12,7 +13,7 @@ export const MembershipProvider = ({ children}: {children: any}) => {
         setIsLoading(true);
         try {
             // Simulate an API call
-            const response = await fetch('https://api.example.com/memberships');
+            const response = await fetch(`${baseUrl}/user/${userId}/memberships`);
             const data = await response.json();
             setMemberships(data);
         } catch (error) {
