@@ -103,7 +103,14 @@ namespace api.Controllers
             }
 
             // Make the CurrentEntries greater by one
-            membership.CurrentEntries += 1;
+            if (!membership.IsExpired)
+            {
+                membership.CurrentEntries += 1;
+            }
+            else
+            {
+                return Ok(membership);
+            }
 
             // If the CurrentEntries is equal to or greater than MaxEntries
             // or the ExpirationDate is greater than today, set IsExpired to true
