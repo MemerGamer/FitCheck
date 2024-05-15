@@ -1,38 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, TextInput, Text, StyleSheet } from 'react-native';
 import { Button } from "react-native-elements";
+import baseUrl from '../contexts/apiContext';
 
-interface Membership {
-    id: number;
-    name: string;
-    duration: number;
-}
 
-const EditMemberships = ({memberships}: {memberships: any}) => {
-    const [name, setName] = useState('');
-    const [duration, setDuration] = useState('');
+const EditMemberships = ({ route, navigation, userId }: { route: any, navigation: any, userId: string }) => {
+    const { uuid } = route.params;
+    console.log("uuid", uuid);
+    console.log("userId", userId);
+    const [memberships, setMemberships] = useState([]);
 
-    const handleAddMembership = () => {
-        if (name && duration) {
-            const newMembership: Membership = {
-                id: memberships.length + 1,
-                name,
-                duration: parseInt(duration),
-            };
+    useEffect(() => {
+        const fetchData = async () => {
+            const resp = await fetch(baseUrl + '/user/' + uuid + '/memberships');
+            const json = await resp.json();
+            console.log(json);
+            setMemberships(json);
+        };
+        fetchData();
+    }, [uuid]);
 
-            memberships.push(newMembership);
-            setName('');
-            setDuration('');
-        }
-    };
 
     return (
         <View style={styles.container}>
             {memberships.map((membership: any) => (
                 <View key={membership.id} className='bg-white my-5 rounded-lg'>
                     <Text className='m-3'>{membership.name}</Text>
-                    <Text className='m-3'>Duration: {membership.duration} days</Text>
-                    <Button title='Delete' buttonStyle={{width: 96, alignSelf: 'flex-end', marginRight: 10, marginBottom: 10, backgroundColor: 'red'}} onPress={() => console.log('Delete', membership.id)}/>
+                    <Button title='Delete' buttonStyle={{ width: 96, alignSelf: 'flex-end', marginRight: 10, marginBottom: 10, backgroundColor: 'red' }} onPress={() => console.log('Delete', membership.id)} />
                 </View>
             ))}
         </View>
@@ -52,7 +46,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 8,
     },
     membership: {
-        marginBottom: 8,        
+        marginBottom: 8,
     },
 });
 
