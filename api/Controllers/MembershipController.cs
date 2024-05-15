@@ -38,9 +38,12 @@ namespace api.Controllers
                         AccessHour = m.AccessHour,
                         IsExpired = ph.IsExpired,
                         CurrentEntries = ph.CurrentEntries,
-                        MaxEntries = m.MaxEntries
+                        MaxEntries = m.MaxEntries,
+                        RemainingEntries = m.MaxEntries - ph.CurrentEntries
                     }
                 )
+                .OrderBy(m => m.IsExpired)
+                .ThenBy(m => m.RemainingEntries)
                 .ToListAsync();
 
             return Ok(memberships);
