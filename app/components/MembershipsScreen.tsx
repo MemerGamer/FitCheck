@@ -24,6 +24,7 @@ const MembershipsScreen = ({ navigation, userId }: { navigation: any, userId: st
             console.log(JSON.stringify(json));
 
             navigation.navigate('MembershipCardDetailed', {
+                id: json.id,
                 title: json.name,
                 description: json.description,
                 availability: `${json.currentEntries}/${json.maxEntries}`,
