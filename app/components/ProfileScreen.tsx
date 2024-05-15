@@ -12,7 +12,7 @@ interface UserProps {
     photo: string;
 }
 
-const ProfileScreen = ({ setIsAuthenticated, setUserId, user }: { setIsAuthenticated: (value: boolean) => void; setUserId: (value: string) => void, user: UserProps }) => {
+const ProfileScreen = ({ setIsAuthenticated, setUserId, user }: { setIsAuthenticated: (value: boolean) => void; setUserId: (value: string) => void, user: any }) => {
     const handleLogout = () => {
         setIsAuthenticated(false);
         setUserId("");

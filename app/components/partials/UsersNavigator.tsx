@@ -6,11 +6,15 @@ import UserProfileScreenStackNavigator from './UserProfileScreenStackNavigator';
 
 const UsersStack = createStackNavigator();
 
-function UsersNavigator() {
+function UsersNavigator({ userId, userType }: { userId: string, userType: string }) {
     return (
         <UsersStack.Navigator initialRouteName='UsersList'>
-            <UsersStack.Screen name="UsersList" component={UsersScreen} options={{ headerShown: false }} />
-            <UsersStack.Screen name="UserProfileScreenStackNavigator" component={UserProfileScreenStackNavigator} />
+            <UsersStack.Screen name="UsersList" options={{ headerShown: false }} >
+                {props => <UsersScreen {...props} userId={userId} />}
+            </UsersStack.Screen>
+            <UsersStack.Screen name="UserProfileScreenStackNavigator" >
+                {props => <UserProfileScreenStackNavigator {...props} userId={userId} userType={userType} />}
+            </UsersStack.Screen>
         </UsersStack.Navigator>
     );
 }

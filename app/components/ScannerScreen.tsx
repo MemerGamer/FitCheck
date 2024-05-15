@@ -3,8 +3,9 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { CameraView, Camera, PermissionStatus } from 'expo-camera';
 import { Button } from "react-native-elements";
+import baseUrl from '../contexts/apiContext';
 
-const ScannerScreen = () => {
+const ScannerScreen = ({ userId }: { userId: string }) => {
     const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
 
@@ -17,9 +18,21 @@ const ScannerScreen = () => {
         getCameraPermissions();
     }, []);
 
-    const handleBarCodeScanned = ({ type, data }: {type: any, data: any }) => {
+    const fetchBarcode = async (data: string) => {
+        const response = await fetch(`${baseUrl}/memberships/scan/${data}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'UserId': `${userId}`
+            }
+        });
+        const json = await response.json();
+        console.log(json);
+    };
+    const handleBarCodeScanned = ({ type, data }: { type: any, data: any }) => {
         setScanned(true);
-        alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+        fetchBarcode(data);
+        alert(`Membership with barcode ${data} has been scanned!`);
     };
 
     if (hasPermission === null) {
@@ -40,7 +53,7 @@ const ScannerScreen = () => {
                 style={StyleSheet.absoluteFillObject}
             />
             {scanned && (
-                <Button title={"Tap to Scan Again"} buttonStyle={{backgroundColor: 'red', borderCurve: 'circular', width: 200, height: 200, alignSelf: 'center'}} onPress={() => setScanned(false)} />
+                <Button title={"Tap to Scan Again"} buttonStyle={{ backgroundColor: 'red', borderCurve: 'circular', width: 200, height: 200, alignSelf: 'center' }} onPress={() => setScanned(false)} />
             )}
         </View>
     );
