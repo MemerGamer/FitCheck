@@ -19,8 +19,13 @@ namespace api.Filters
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            string userIdHeader = context.HttpContext.Request.Headers["user_id"];
+            Console.WriteLine("AdminAuthorizationFilter");
+            //print all the header values
+            foreach (var header in context.HttpContext.Request.Headers)
+                Console.WriteLine(header);
 
+            string userIdHeader = context.HttpContext.Request.Headers["userid"];
+            Console.WriteLine(userIdHeader);
             if (!string.IsNullOrEmpty(userIdHeader) && Guid.TryParse(userIdHeader, out Guid userId))
             {
                 var user = await _dbContext.Users.FindAsync(userId);
