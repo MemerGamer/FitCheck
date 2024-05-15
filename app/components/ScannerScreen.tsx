@@ -26,13 +26,19 @@ const ScannerScreen = ({ userId }: { userId: string }) => {
                 'UserId': `${userId}`
             }
         });
+        if(response.ok){
+            alert(`Membership with barcode ${data} has been scanned!`);
+        }
+        else{
+            alert(`Membership with barcode ${data} not found, might be expired!`);
+        }
         const json = await response.json();
+
         console.log(json);
     };
     const handleBarCodeScanned = ({ type, data }: { type: any, data: any }) => {
         setScanned(true);
         fetchBarcode(data);
-        alert(`Membership with barcode ${data} has been scanned!`);
     };
 
     if (hasPermission === null) {
