@@ -105,14 +105,15 @@ namespace api.Controllers
                 return NotFound();
             }
 
-            // Make the CurrentEntries greater by one
             if (!membership.IsExpired)
             {
+
+                // Make the CurrentEntries greater by one
                 membership.CurrentEntries += 1;
             }
             else
             {
-                return Ok(membership);
+                return NotFound();
             }
 
             // If the CurrentEntries is equal to or greater than MaxEntries
