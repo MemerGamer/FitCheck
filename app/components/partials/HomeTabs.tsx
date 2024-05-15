@@ -5,7 +5,6 @@ import MembershipsNavigator from './MembershipsNavigator';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import ScannerScreen from '../ScannerScreen';
 import UsersNavigator from './UsersNavigator';
-import { MembershipProvider } from '../../contexts/MembershipContext';
 
 import baseUrl from '../../contexts/apiContext';
 
@@ -77,19 +76,23 @@ function HomeTabs({ setIsAuthenticated, setUserId, userId }: { setIsAuthenticate
             })}>
             {userType.toLowerCase() === 'admin' ? (
                 <Tab.Group>
-                    <Tab.Screen name="Users" component={UsersNavigator} />
-                    <Tab.Screen name="Scanner" component={ScannerScreen} />
+                    <Tab.Screen name="Users">
+                        {props => <UsersNavigator {...props} userId={userId} userType={userType} />}
+                    </Tab.Screen>
+                    <Tab.Screen name="Scanner" >
+                        {props => <ScannerScreen {...props} userId={userId} />}
+                    </Tab.Screen>
                     <Tab.Screen name='Profile'>
-                        {props => <ProfileScreen {...props} setIsAuthenticated={setIsAuthenticated} user={userData} />}
+                        {props => <ProfileScreen {...props} setIsAuthenticated={setIsAuthenticated} setUserId={setUserId} user={userData} />}
                     </Tab.Screen>
                 </Tab.Group>
 
             ) : (
                 <Tab.Group>
                     {/* <MembershipProvider userId={userId}> */}
-                        <Tab.Screen name="Memberships">
-                            {props => <MembershipsNavigator {...props} userId={userId} />}
-                        </Tab.Screen>
+                    <Tab.Screen name="Memberships">
+                        {props => <MembershipsNavigator {...props} userId={userId} />}
+                    </Tab.Screen>
                     {/* </MembershipProvider> */}
                     <Tab.Screen name="Profile">
                         {props => <ProfileScreen {...props} setIsAuthenticated={setIsAuthenticated} setUserId={setUserId} user={userData as any} />}
