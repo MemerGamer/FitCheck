@@ -1,76 +1,98 @@
-import React, { useState } from 'react';
-import { View, Button, Text, StyleSheet, Alert } from 'react-native';
-import { ScrollView, TextInput } from 'react-native-gesture-handler';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Button, Alert, StyleSheet } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
+import { Dropdown } from 'react-native-element-dropdown';
+import baseUrl from '../contexts/apiContext';
 
-const AddNewMembershipScreen = () => {
-    const [membershipName, setMembershipName] = useState('');
-    const [accessHours, setAccessHours] = useState('');
-    const [expiration, setExpiration] = useState('');
-    const [maxEntry, setMaxEntry] = useState('');
-    const [description, setDescription] = useState('');
-    const [price, setPrice] = useState('');
-    const currentEntry = 0;
-    
-    const validateMaxEntry = (maxEntry: any) => {
-        return /^\d+$/.test(maxEntry);
-    };
-    
-    const validatePrice = (price: any) => {
-        return /^\d+(\.\d{1,2})?$/.test(price);
-    };    
+const AddNewMembershipScreen = ({ route, userId }: { route: any, userId: string }) => {
+    const { uuid } = route.params;
 
-    const handleAddMembership = () => {
-        if (!membershipName || !accessHours || !maxEntry || !price) {
-            Alert.alert('Error', 'Please fill in all fields');
-            return;
-        }
+    console.log("uuid", uuid);
+    const [membershipTypes, setMembershipTypes] = useState([]);
+    const [selectedMembership, setSelectedMembership] = useState(null);
 
-        if (!validateMaxEntry(maxEntry)) {
-            Alert.alert('Error', 'Invalid Maximum Entry Number. Please use a number');
-            return;
-        }
+    useEffect(() => {
+        const fetchMembershipTypes = async () => {
+            const response = await fetch(baseUrl + '/memberships', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'UserId': `${userId}`
+                }
+            });
+            const data = await response.json();
 
-        if (!validatePrice(price)) {
-            Alert.alert('Error', 'Invalid Price. Please use a number');
-            return;
-        }
-
-        const newMembership = {
-            membershipName,
-            accessHours,
-            expiration,
-            maxEntry,
-            description,
-            price,
-            currentEntry,
+            console.log(data);
+            setMembershipTypes(data);
         };
 
-        console.log(newMembership);
+        fetchMembershipTypes();
+    }, [userId]);
+
+    const handleAddMembership = async () => {
+        if (!selectedMembership) {
+            alert('Please select a membership type');
+            return;
+        }
+
+        const resp = await fetch(baseUrl + '/memberships/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'UserId': `${userId}`
+            },
+            body: JSON.stringify({ UserId: uuid, MembershipId: selectedMembership })
+        });
+
+        if (resp.ok) {
+            alert('Membership added successfully');
+        } else {
+            alert('Failed to add membership');
+        }
+    };
+
+    const renderMembershipDetails = () => {
+        if (selectedMembership) {
+            const membership: any = membershipTypes.find((item: any) => item.id === selectedMembership);
+
+            if (membership) {
+                return (
+                    <View style={styles.detailsContainer}>
+                        <Text style={styles.detailsTitle}>{membership.name}</Text>
+                        <Text style={styles.detailsText}>Access Hours: {membership.accessHour}</Text>
+                        <Text style={styles.detailsText}>Description: {membership.description}</Text>
+                        <Text style={styles.detailsText}>Max Entries: {membership.maxEntries}</Text>
+                        <Text style={styles.detailsText}>Price: ${membership.price}</Text>
+                    </View>
+                );
+            }
+        }
+
+        return null;
     };
 
     return (
         <ScrollView>
             <View>
-                <View className='m-2'>
-                    <Text className='underline'>Membership Name:</Text>
-                    <TextInput value={membershipName} placeholder='Enter Membership Name' onChangeText={setMembershipName} className='bg-white text-black p-2' />
-                </View>
-                <View className='m-2'>
-                    <Text className='underline'>Access Hours:</Text>
-                    <TextInput value={accessHours} placeholder='Enter Access Hours e.g., 09:00 - 17:00' onChangeText={setAccessHours} className='bg-white text-black p-2' />
-                </View>
-                <View className='m-2'>
-                    <Text className='underline'>Maximum Entry Number:</Text>
-                    <TextInput value={maxEntry} placeholder='Enter Maximum Entry Number' keyboardType='numeric' onChangeText={setMaxEntry} className='bg-white text-black p-2' />
-                </View>
-                <View className='m-2'>
-                    <Text className='underline'>Description:</Text>
-                    <TextInput value={description} placeholder='Enter Description' onChangeText={setDescription} className='bg-white text-black p-2' />
-                </View>
-                <View className='m-2'>
-                    <Text className='underline'>Price:</Text>
-                    <TextInput value={price} placeholder='Enter Price e.g., 99.99' keyboardType='numeric' onChangeText={setPrice} className='bg-white text-black p-2' />
-                </View>
+                <Dropdown
+                    style={styles.dropdown}
+                    placeholderStyle={styles.placeholderStyle}
+                    selectedTextStyle={styles.selectedTextStyle}
+                    inputSearchStyle={styles.inputSearchStyle}
+                    iconStyle={styles.iconStyle}
+                    data={membershipTypes}
+                    search
+                    maxHeight={300}
+                    labelField="name"
+                    valueField="id"
+                    placeholder="Select membership type"
+                    searchPlaceholder="Search..."
+                    value={selectedMembership}
+                    onChange={(item: any) => {
+                        setSelectedMembership(item.id);
+                    }}
+                />
+                {renderMembershipDetails()}
                 <Button title="Add Membership" onPress={handleAddMembership} />
             </View>
         </ScrollView>
@@ -78,28 +100,11 @@ const AddNewMembershipScreen = () => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: 'white',
-        padding: 16,
-    },
     dropdown: {
+        margin: 16,
         height: 50,
-        borderColor: 'gray',
-        borderWidth: 0.5,
-        borderRadius: 8,
-        paddingHorizontal: 8,
-    },
-    icon: {
-        marginRight: 5,
-    },
-    label: {
-        position: 'absolute',
-        backgroundColor: 'white',
-        left: 22,
-        top: 8,
-        zIndex: 999,
-        paddingHorizontal: 8,
-        fontSize: 14,
+        borderBottomColor: 'gray',
+        borderBottomWidth: 0.5,
     },
     placeholderStyle: {
         fontSize: 16,
@@ -114,6 +119,21 @@ const styles = StyleSheet.create({
     inputSearchStyle: {
         height: 40,
         fontSize: 16,
+    },
+    detailsContainer: {
+        margin: 16,
+        padding: 16,
+        backgroundColor: '#f0f0f0',
+        borderRadius: 8,
+    },
+    detailsTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 8,
+    },
+    detailsText: {
+        fontSize: 16,
+        marginBottom: 4,
     },
 });
 

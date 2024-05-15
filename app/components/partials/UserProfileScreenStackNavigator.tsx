@@ -18,7 +18,9 @@ function UserProfileScreenStackNavigator({ route, navigation, userId, userType }
             <UserProfileStack.Screen name='MembershipCardDetailed'>
                 {props => <MembershipCardDetailed {...props} userId={userId} userType={userType} />}
             </UserProfileStack.Screen>
-            <UserProfileStack.Screen name='AddNewMembership' component={AddNewMembershipScreen} />
+            <UserProfileStack.Screen name='AddNewMembership'>
+                {props => <AddNewMembershipScreen {...props} userId={userId} />}
+            </UserProfileStack.Screen>
         </UserProfileStack.Navigator>
     );
 }

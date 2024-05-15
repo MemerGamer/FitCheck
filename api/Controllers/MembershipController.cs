@@ -150,5 +150,50 @@ namespace api.Controllers
 
             return Ok();
         }
+
+        [ServiceFilter(typeof(AdminAuthorizationFilter))]
+        [HttpPost("memberships/create")]
+        public async Task<IActionResult> CreatePurchasedMembership([FromBody] CreatePurchasedMembershipRequest request)
+        {
+            var membership = await _context.Memberships
+                .Where(m => m.Id == request.MembershipId)
+                .FirstOrDefaultAsync();
+
+            if (membership == null)
+            {
+                return NotFound("Membership not found.");
+            }
+
+            var purchasedMembershipId = Guid.NewGuid();
+            var barcodeUrl = $"https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={purchasedMembershipId}";
+
+            var purchasedMembership = new PurchasedMemberships
+            {
+                Id = purchasedMembershipId,
+                UserId = request.UserId,
+                MembershipId = request.MembershipId,
+                Barcode = barcodeUrl,
+                PurchaseDate = DateTime.UtcNow,
+                ExpirationDate = DateTime.UtcNow.AddMonths(1),
+                IsExpired = false,
+                CurrentEntries = 0
+            };
+
+            _context.PurchasedMemberships.Add(purchasedMembership);
+            await _context.SaveChangesAsync();
+
+            var options = new JsonSerializerOptions
+            {
+                ReferenceHandler = ReferenceHandler.Preserve
+            };
+
+            return new JsonResult(purchasedMembership, options);
+        }
+
+        public class CreatePurchasedMembershipRequest
+        {
+            public Guid UserId { get; set; }
+            public Guid MembershipId { get; set; }
+        }
     }
 }

@@ -91,7 +91,7 @@ const UserProfile = ({ route, navigation, userId }: { route: any; navigation: an
                 ))}
             </View>
             <View className="flex flex-col mt-5 h-fit w-96 self-center">
-                <Button title="Add New Membership" buttonStyle={{ marginVertical: 5 }} onPress={() => navigation.navigate('AddNewMembership')} />
+                <Button title="Add New Membership" buttonStyle={{ marginVertical: 5 }} onPress={() => navigation.navigate('AddNewMembership', { uuid: uuid })} />
                 <Button title="Delete User" buttonStyle={{ marginBottom: 5, backgroundColor: 'red' }} onPress={() => deleteUser(uuid, userId)} />
             </View>
         </ScrollView>
