@@ -91,7 +91,7 @@ function HomeTabs({ setIsAuthenticated, setUserId, userId }: { setIsAuthenticate
                 <Tab.Group>
                     {/* <MembershipProvider userId={userId}> */}
                     <Tab.Screen name="Memberships">
-                        {props => <MembershipsNavigator {...props} userId={userId} />}
+                        {props => <MembershipsNavigator {...props} userId={userId} userType={userType} />}
                     </Tab.Screen>
                     {/* </MembershipProvider> */}
                     <Tab.Screen name="Profile">

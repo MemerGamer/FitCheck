@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, RefreshControl, SafeAreaView } from 'react-native';
 import MembershipCard from './partials/MembershipCard';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import baseUrl from '../contexts/apiContext';
 
 const MembershipsScreen = ({ navigation, userId }: { navigation: any, userId: string }) => {
     const [cardData, setCardData] = useState([]);
+    const [refreshing, setRefreshing] = React.useState(false);
+    const fetchData = async () => {
+        const resp = await fetch(baseUrl + '/user/' + userId + '/memberships');
+        const json = await resp.json();
+        console.log(json);
+        setCardData(json);
+    };
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const resp = await fetch(baseUrl + '/user/' + userId + '/memberships');
-            const json = await resp.json();
-            console.log(json);
-            setCardData(json);
-        };
+    useEffect(() => {    
         fetchData();
     }, [userId]);
 
@@ -39,23 +40,35 @@ const MembershipsScreen = ({ navigation, userId }: { navigation: any, userId: st
         }
     };
 
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        setTimeout(() => {
+            fetchData();
+            setRefreshing(false);
+        }, 1000);
+    }, []);
+
     return (
-        <ScrollView>
-            {cardData.map((card: any, index) => (
-                <TouchableOpacity
-                    key={index}
-                    onPress={() => handleCardPress(card.id)}
-                >
-                    <MembershipCard
+        <SafeAreaView>
+            <ScrollView refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }>
+                {cardData.map((card: any, index) => (
+                    <TouchableOpacity
                         key={index}
-                        title={card.name}
-                        accessHours={card.accessHour}
-                        availability={card.currentEntries + '/' + card.maxEntries}
-                        isExpired={card.isExpired}
-                    />
-                </TouchableOpacity>
-            ))}
-        </ScrollView>
+                        onPress={() => handleCardPress(card.id)}
+                    >
+                        <MembershipCard
+                            key={index}
+                            title={card.name}
+                            accessHours={card.accessHour}
+                            availability={card.currentEntries + '/' + card.maxEntries}
+                            isExpired={card.isExpired}
+                        />
+                    </TouchableOpacity>
+                ))}
+            </ScrollView>
+        </SafeAreaView>
     );
 };
 
