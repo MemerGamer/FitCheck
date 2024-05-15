@@ -49,10 +49,28 @@ namespace api.Controllers
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await _context.Users
+                .Where(u => !u.IsDeleted)
                 .Select(u => new { Id = u.Id, Username = u.Username })
                 .ToListAsync();
 
             return Ok(users);
+        }
+
+        [ServiceFilter(typeof(AdminAuthorizationFilter))]
+        [HttpDelete("delete/{userId}")]
+        public async Task<IActionResult> DeleteUser(Guid userId)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            user.IsDeleted = true;
+            await _context.SaveChangesAsync();
+
+            return Ok();
         }
     }
 }
