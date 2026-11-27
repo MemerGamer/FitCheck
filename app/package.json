@@ -31,5 +31,9 @@
     "@types/react": "~18.2.45",
     "typescript": "^5.3.3"
   },
-  "private": true
+  "private": true,
+  "overrides": {
+    "postcss": "^8.5.23",
+    "send": "^0.19.0"
+  }
 }
